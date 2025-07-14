@@ -9,6 +9,10 @@ characters = pd.read_csv('mario_kart_stats_chars.csv')
 karts = pd.read_csv('mario_kart_vehicles.csv')
 special_stats = pd.read_csv('vehicles_stats_special.csv')
 
+# Load new substat data
+character_substats = pd.read_csv('driver_speed_broken_down.csv')
+vehicle_substats = pd.read_csv('vehicle_speed_broken_down.csv')
+
 # Page configuration
 st.set_page_config(
     page_title="MK World Stats", 
@@ -16,13 +20,28 @@ st.set_page_config(
     layout="wide"
 )
 
-
 # Apply custom styles for progress bars
 st.markdown("""
     <style>
+            
+    /* Default progress bar color */
     .stProgress > div > div > div > div {
         background-color: #FF9800;
     }
+    
+    /* Individual colored bars */
+    .asphalt-bar {
+        background-color: #757575 !important;
+    }
+    
+    .dirt-bar {
+        background-color: #8D6E63 !important;
+    }
+    
+    .water-bar {
+        background-color: #2196F3 !important;
+    }
+    
     .image-container {
         display: flex;
         justify-content: center;
@@ -38,10 +57,62 @@ st.markdown("""
         color: #E60012;  /* Red color for negative adjustments */
         font-weight: bold;
     }
+    .substat-label {
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+    
+    /* Custom progress bar containers */
+    .custom-progress {
+        height: 20px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        margin: 10px 0;
+        overflow: hidden;
+    }
+    .custom-progress-bar {
+        height: 100%;
+        border-radius: 5px;
+    }
+            
+        .attribution {
+        position: relative;
+        margin-top: 0px;
+        padding: 0px 0px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        font-size: 0.85rem;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .attribution a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    .attribution a:hover {
+        text-decoration: underline;
+    }
     </style>
     <div class="attribution">
-        The information, images and stats is from the Super Mario Wiki<br>
-        Source: <a href="https://www.mariowiki.com/Mario_Kart_World" target="_blank">https://www.mariowiki.com/Mario_Kart_World</a>
+        <p style="margin-bottom: 8px;"><strong>Sources & Acknowledgements:</strong></p>
+        <ul style="list-style-type: none; padding-left: 10px; margin: 0;">
+            <li style="margin-bottom: 8px;">
+                📖 Information, images and stats from the Super Mario Wiki<br>
+                <a href="https://www.mariowiki.com/Mario_Kart_World" target="_blank">mariowiki.com/Mario_Kart_World</a>
+            </li>
+            <li style="margin-bottom: 8px;">
+                👤 Thanks to u/Shokaah for the detailed Reddit post<br>
+                <a href="https://www.reddit.com/r/mariokart/comments/1lnrtpx/mario_kart_world_stats_and_builder_updated_with/" target="_blank">Reddit: Mario Kart World Stats and Builder</a>
+            </li>
+            <li>
+                ✖️ Credit to @CrypticJacknife for additional data<br>
+                <a href="https://x.com/CrypticJacknife/status/1933004726809080286" target="_blank">X.com: Detailed Stats Breakdown</a>
+            </li>
+        </ul>
     </div>
 """, unsafe_allow_html=True)
 st.markdown("---")
@@ -49,7 +120,7 @@ st.title("Mario Kart World 🌎")
 st.header("Character and Vehicle Stats")
 
 # Function to display statistics with progress bar
-def show_stat_with_bar(label, value, max_value=9, adjustment=0):
+def show_stat_with_bar(label, value, max_value=10, adjustment=0):
     # Ensure value is within range
     normalized_value = min(max(value, 0), max_value) / max_value
     
@@ -66,7 +137,59 @@ def show_stat_with_bar(label, value, max_value=9, adjustment=0):
     with col2:
         st.write(f"{value}/{max_value}")
 
-def show_stat_with_bar_total(label, value, max_value=18, adjustment=0):
+def show_speed_substats(substats_data, item_name, item_type="Driver"):
+    if substats_data is not None:
+        st.markdown("##### Speed Substats")
+        
+        # Asphalt - Gray
+        st.markdown('<p class="substat-label">Asphalt</p>', unsafe_allow_html=True)
+        asphalt_val = substats_data.get("Asphalt", 0)
+        normalized_asphalt = min(max(asphalt_val, 0), 9) / 9 * 100  # Convert to percentage
+        
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            # Custom HTML progress bar with gray color
+            st.markdown(f"""
+            <div class="custom-progress">
+                <div class="custom-progress-bar asphalt-bar" style="width: {normalized_asphalt}%;"></div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.write(f"{asphalt_val}/10")
+        
+        # Dirt - Brown
+        st.markdown('<p class="substat-label">Dirt</p>', unsafe_allow_html=True)
+        dirt_val = substats_data.get("Dirt", 0)
+        normalized_dirt = min(max(dirt_val, 0), 9) / 9 * 100  # Convert to percentage
+        
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            # Custom HTML progress bar with brown color
+            st.markdown(f"""
+            <div class="custom-progress">
+                <div class="custom-progress-bar dirt-bar" style="width: {normalized_dirt}%;"></div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.write(f"{dirt_val}/10")
+        
+        # Water - Blue
+        st.markdown('<p class="substat-label">Water</p>', unsafe_allow_html=True)
+        water_val = substats_data.get("Water", 0)
+        normalized_water = min(max(water_val, 0), 9) / 9 * 100  # Convert to percentage
+        
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            # Custom HTML progress bar with blue color
+            st.markdown(f"""
+            <div class="custom-progress">
+                <div class="custom-progress-bar water-bar" style="width: {normalized_water}%;"></div>
+            </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.write(f"{water_val}/10")
+
+def show_stat_with_bar_total(label, value, max_value=20, adjustment=0):
     # Ensure value is within range
     normalized_value = min(max(value, 0), max_value) / max_value
     
@@ -173,6 +296,19 @@ with col1:
         for stat, value in character_stats.items():
             if pd.notna(value):
                 show_stat_with_bar(stat, value)
+        
+        # Display speed substats if available
+        if selected_character in character_substats["Driver"].values:
+            substat_data = character_substats[character_substats["Driver"] == selected_character].iloc[0]
+            substats = {
+                "Avg": substat_data.get("Avg", 0),
+                "Asphalt": substat_data.get("Asphalt", 0),
+                "Dirt": substat_data.get("Dirt", 0),
+                "Water": substat_data.get("Water", 0)
+            }
+            
+            st.markdown("---")
+            show_speed_substats(substats, selected_character, "Driver")
 
 # Vehicle selection
 with col2:
@@ -207,6 +343,19 @@ with col2:
         for stat, value in vehicle_stats.items():
             if pd.notna(value):
                 show_stat_with_bar(stat, value)
+        
+        # Display speed substats if available
+        if selected_vehicle in vehicle_substats["Vehicle"].values:
+            substat_data = vehicle_substats[vehicle_substats["Vehicle"] == selected_vehicle].iloc[0]
+            substats = {
+                "Avg": substat_data.get("Avg", 0),
+                "Asphalt": substat_data.get("Asphalt", 0),
+                "Dirt": substat_data.get("Dirt", 0),
+                "Water": substat_data.get("Water", 0)
+            }
+            
+            st.markdown("---")
+            show_speed_substats(substats, selected_vehicle, "Vehicle")
 
 # Display combined stats
 if selected_character and selected_vehicle:
@@ -279,3 +428,38 @@ if selected_character and selected_vehicle:
     with right_col:
         show_stat_with_bar_total("Weight", combined_stats.get("Weight", 0), adjustment=adjustments.get("Weight", 0))
         show_stat_with_bar_total("Handling", combined_stats.get("Handling", 0), adjustment=adjustments.get("Handling", 0))
+
+
+# Add Mini-Turbo Duration section
+st.markdown("---")
+st.subheader("Pink Mini-Turbo Duration")
+st.info("""
+**Mini-Turbo has a 1 to 1 relation to acceleration**, meaning that the higher your acceleration stat, the longer your mini-turbo boost lasts.""")
+
+# Calculate Mini-Turbo Duration: (Acceleration Stat + 59) / 24
+acceleration = combined_stats.get("Acceleration", 0)
+mini_turbo_duration = (acceleration + 59) / 24
+
+# Display the formula and result
+st.markdown(f"""
+**Formula**: (Acceleration + 59) / 24
+
+**Calculation**: ({acceleration} + 59) / 24
+""")
+
+# Create a visual representation with icon and large text
+st.markdown(f"""
+<div style="display: flex; align-items: center; justify-content: center; margin: 20px 0;">
+    <span style="font-size: 80px; margin-right: 15px;">⏱️</span>
+    <span style="font-size: 80px; font-weight: bold; color: #9C27B0;">{mini_turbo_duration:.2f}</span>
+    <span style="font-size: 24px; margin-left: 10px;">seconds</span>
+</div>
+""", unsafe_allow_html=True)
+
+# Add explanation of Mini-Turbo Duration
+st.info("""
+**What is Pink Mini-Turbo Duration?**  
+Mini-Turbo Duration determines how long your mini-turbo boost lasts when performing a drift. 
+Higher values mean longer-lasting boosts, which can provide a significant advantage in races, 
+especially on tracks with many turns.
+""")

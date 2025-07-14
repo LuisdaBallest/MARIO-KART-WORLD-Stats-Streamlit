@@ -1,0 +1,41 @@
+Vehicle,Avg,Asphalt,Dirt,Water
+Cute Scoot,0,0,0,0
+Standard Bike,0,0,0,0
+Tune Thumper,0,0,0,0
+Dolphin Dasher,1,-1,-1,4
+Fin Twin,1,-1,-1,4
+Hyper Pipe,1,-1,4,-1
+Rally Bike,1,-1,4,-1
+Pipe Frame,1,1,1,1
+Mach Rocket,2,5,0,0
+R.O.B. H.O.G.,2,5,0,0
+Biddybuggy,2,0,5,0
+Baby Blooper,3,6,1,1
+Loco Moto,3,3,3,3
+Plushbuggy,4,4,4,4
+Standard Kart,4,4,4,4
+Blastronaut III,4,4,4,4
+B Dasher*,5,7,3,3
+Bumble V*,5,7,3,3
+Hot Rod*,5,7,3,3
+Roadster Royale*,5,7,2,3
+Rally Kart*,5,3,7,3
+Zoom Buggy*,5,3,7,3
+Carpet Flyer*,5,3,3,7
+Ribbit Revster*,5,3,3,7
+Cloud 9*,5,2,2,6
+Dread Sled,5,2,8,4
+Funky Dorrie*,5,3,3,7
+W-Twin Chopper,6,6,6,6
+Billdozer,6,9,4,4
+Big Horn,6,8,5,5
+Rallygator,6,8,5,5
+Reel Racer,7,7,7,7
+Junkyard Hog,7,7,7,7
+Bowser Bruiser,7,6,9,6
+Chargin' Truck,7,6,9,6
+Lil' Dumpy,7,6,9,6
+Tiny Titan,7,6,9,6
+Mecha Trike,7,6,6,9
+Lobster Roller,7,6,6,9
+Stellar Sled*,8,5,7,10
