@@ -455,11 +455,3 @@ st.markdown(f"""
     <span style="font-size: 24px; margin-left: 10px;">seconds</span>
 </div>
 """, unsafe_allow_html=True)
-
-# Add explanation of Mini-Turbo Duration
-st.info("""
-**What is Pink Mini-Turbo Duration?**  
-Mini-Turbo Duration determines how long your mini-turbo boost lasts when performing a drift. 
-Higher values mean longer-lasting boosts, which can provide a significant advantage in races, 
-especially on tracks with many turns.
-""")
